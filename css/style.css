@@ -1,0 +1,30 @@
+*{
+    box-sizing: border-box;
+    
+    }
+    main{
+    
+    }
+    
+    section {
+        display: inline-grid;
+        width:45%;
+        padding: 5%;    
+    }
+    div {
+        width:100%;   
+    }
+    canvas, table {
+        margin-bottom: 50px;
+    
+    }
+    
+    
+    html {
+     background-color: #F1F4FF;   
+    }
+    
+    table.dataTable.stripe tbody tr.odd, table.dataTable.display tbody tr.odd {
+        background-color: blueviolet;
+    }
+    
