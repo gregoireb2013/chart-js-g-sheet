@@ -53,6 +53,7 @@ $(document).ready( function () {
                     'April',
                     'May',
                     'June',
+                    'JUillet'
                   ],
                 datasets: [{
                   label: 'Network developmet',
