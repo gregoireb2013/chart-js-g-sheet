@@ -87,7 +87,7 @@ $(document).ready( function () {
           }
       );
     
-    
+    /*
                   var myChart4 = new Chart(
         document.getElementById('myChart4'),
         {
@@ -116,15 +116,29 @@ $(document).ready( function () {
 
 
 
+*/
 
 
 
+
+
+
+
+
+
+
+
+
+
+      
+
+/* chart kpi réponses reçues / messages envoyées */
 
       function grab() {
-        /* Promise to make sure data loads */
+      
       return new Promise((resolve, reject) => {
             $.ajax({
-                url: "https://spreadsheets.google.com/feeds/cells/1-ZQmPvrsFpeJnZ8vHZV-HDfrRSgidrMGJIop_2BcOq4/1/public/full?alt=json&min-row=2&min-col=9&max-col=10",
+                url: "https://spreadsheets.google.com/feeds/cells/1-ZQmPvrsFpeJnZ8vHZV-HDfrRSgidrMGJIop_2BcOq4/1/public/full?alt=json&min-row=2&min-col=10&max-col=11",
                 method: "GET",
                 dataType: 'JSON',
                 success: function(data) {
@@ -143,20 +157,20 @@ $(document).ready( function () {
     $(document).ready(function() {
         grab().then((data) => {
 
-            var nbConnected = 0; 
-            var nbOui = 0; 
+            var nbM_sent = 0; 
+            var nbReplied = 0; 
             data.feed.entry.forEach(element => {
              // console.log(element.content.$t) 
-              if(element.content.$t === "connected") {
-                nbConnected +=1;
+              if(element.content.$t === "M_sent") {
+                nbM_sent +=1;
               }  
               
-              if(element.content.$t === "Oui") {
-                nbOui +=1;
+              if(element.content.$t === "Replied") {
+                nbReplied +=1;
               }
           
             })
-            console.log(nbConnected);
+            console.log(nbM_sent);
             //console.log('Recieved our data', data.feed.entry);
             var myChart = new Chart(
               document.getElementById('myChart'),
@@ -174,7 +188,7 @@ $(document).ready( function () {
                           '#606060',
                           '#00BFA5'  
                         ],
-                        data: [nbConnected, nbOui],
+                        data: [nbM_sent, nbReplied],
                       }]
                     },
                   options: {}
@@ -216,6 +230,154 @@ $(document).ready( function () {
             console.log(error);
         })
     });
+
+
+
+
+
+
+/* chart kpi conversion rdv */
+
+function grab() {
+      
+  return new Promise((resolve, reject) => {
+        $.ajax({
+            url: "https://spreadsheets.google.com/feeds/cells/1-ZQmPvrsFpeJnZ8vHZV-HDfrRSgidrMGJIop_2BcOq4/1/public/full?alt=json&min-row=2&min-col=10&max-col=25",
+            method: "GET",
+            dataType: 'JSON',
+            success: function(data) {
+              console.log(data)
+                resolve(data)
+  
+            },
+            error: function(error) {
+              console.log(error)
+                reject(error);
+            }
+        })
+    })
+}
+
+$(document).ready(function() {
+    grab().then((data) => {
+
+        var nbM_sent = 0; 
+        var nbReplied = 0; 
+        data.feed.entry.forEach(element => {
+         // console.log(element.content.$t) 
+          if(element.content.$t === "M_sent") {
+            nbM_sent +=1;
+          }  
+          
+          if(element.content.$t === "Replied") {
+            nbReplied +=1;
+          }
+      
+        })
+        console.log(nbM_sent);
+
+
+
+        var myChart4 = new Chart(
+          document.getElementById('myChart4'),
+          {
+              type: 'polarArea',
+              data:{
+                  labels: [
+                      'I#A-M#n',
+                      'I#A-M#B',
+                      'I#B-M#A',
+                      'I#B-M#B'
+                    ],
+                  datasets: [{
+                    label: 'A/B',
+                    backgroundColor: [
+                        '#00BFA5',      
+                        'rgb(255, 99, 132)',
+                        '#005BF7',      
+                        'rgb(255, 205, 86)'
+                    ],
+                    data: [45, 23, 32, 1],
+                  }]
+                },
+              options: {}
+            }
+        );
+
+
+
+
+
+        //console.log('Recieved our data', data.feed.entry);
+        var myChart = new Chart(
+          document.getElementById('myChart'),
+          {
+              type: 'bar',
+              data:{
+                  labels: [
+                      'all messages sent',
+                      'with answer',
+                    ],
+                  datasets: [{
+                    label: 'My First dataset',
+                          
+                    backgroundColor: [
+                      '#606060',
+                      '#00BFA5'  
+                    ],
+                    data: [nbM_sent, nbReplied],
+                  }]
+                },
+              options: {}
+            }
+        );
+        let campagne = [];
+        let value = [];
+
+        try {
+            data.forEach((item) => {
+                campagne.push(item.CAMPAGNE)
+                value.push(item.REV_VALUE)
+            });
+
+            let chartdata = {
+                labels: [...campagne],
+                datasets: [{
+                    label: 'CAMPAGNE',
+                    backgroundColor: 'rgba(200, 200, 200, 0.75)',
+                    borderColor: 'rgba(200, 200, 200, 0.75)',
+                    hoverBackgroundColor: 'rgba(200, 200, 200, 1)',
+                    hoverBorderColor: 'rgba(200, 200, 200, 1)',
+                    data: [...value]
+                }]
+            };
+
+            let ctx = $("#myChart");
+
+            let barGraph = new Chart(ctx, {
+                type: 'bar',
+                data: chartdata
+            });
+
+        } catch (error) {
+            console.log('Error parsing JSON data', error)
+        }
+
+    }).catch((error) => {
+        console.log(error);
+    })
+});
+
+
+
+
+
+
+
+
+
+
+
 
 
 
